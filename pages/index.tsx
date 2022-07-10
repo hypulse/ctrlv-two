@@ -2,10 +2,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import wordmark from "../public/wordmark.png";
 import wordmark_dark from "../public/wordmark_dark.png";
-import graphic from "../public/graphic.png";
+
+const URL = "http://www.w3.org/2000/svg";
 
 const darkIcon = (
   <svg
@@ -50,15 +51,43 @@ const sysIcon = (
   </svg>
 );
 
+const closeIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-6 h-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+const checkIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M21.856 10.303c.086.554.144 1.118.144 1.697 0 6.075-4.925 11-11 11s-11-4.925-11-11 4.925-11 11-11c2.347 0 4.518.741 6.304 1.993l-1.422 1.457c-1.408-.913-3.082-1.45-4.882-1.45-4.962 0-9 4.038-9 9s4.038 9 9 9c4.894 0 8.879-3.928 8.99-8.795l1.866-1.902zm-.952-8.136l-9.404 9.639-3.843-3.614-3.095 3.098 6.938 6.71 12.5-12.737-3.096-3.096z" />
+  </svg>
+);
+
 const Home: NextPage = () => {
   const router = useRouter();
-  const { locale, locales, defaultLocale } = router;
+  const { locale, locales } = router;
+
   const [menuOpen, setMenuOpen] = useState(false);
-  const toggleThemeMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
+  const [shareOpen, setShareOpen] = useState(false);
   const [theme, setTheme] = useState("light");
   const [sysTheme, setSysTheme] = useState("light");
+  const [text, setText] = useState("");
+  const [num, setNum] = useState(100);
+  const [notiOpen, setNotiOpen] = useState(false);
+
   const themeChainging = () => {
     if (
       localStorage.theme === "dark" ||
@@ -71,6 +100,27 @@ const Home: NextPage = () => {
     }
   };
 
+  const copyCommand = (text: string) => {
+    const t = document.createElement("textarea");
+    document.body.appendChild(t);
+    t.value = text;
+    t.select();
+    document.execCommand("copy");
+    document.body.removeChild(t);
+  };
+
+  const webShare = async (text: string) => {
+    if (navigator.share) {
+      await navigator.share({
+        title: document.title,
+        url: URL,
+        text,
+      });
+    } else {
+      setShareOpen(true);
+    }
+  };
+
   useEffect(() => {
     themeChainging();
     window
@@ -80,30 +130,157 @@ const Home: NextPage = () => {
       });
   });
 
-  const webShare = async (text: string) => {
-    if (navigator.share) {
-      await navigator.share({
-        title: document.title,
-        url: document.location.href,
-        text,
-      });
-    } else {
-      alert("hi");
-      // copyToClipboard(url, "클립보드에 주소가 복사되었습니다.");
-    }
-  };
-
   return (
     <>
       <Head>
         <title>Online CtrlV</title>
         <meta property="og:title" content="Online CtrlV" />
         <meta property="og:site_name" content="Online CtrlV" />
-        {/* <meta property="og:url" content="https://ogp.me/" /> */}
-        {/* <meta property="og:description" content="안녕하세여!!히히" /> */}
+        <meta property="og:url" content={URL} />
+        <meta
+          property="og:description"
+          content={
+            locale == "ko"
+              ? "친구에게 보내는 무한 복붙 메시지!"
+              : "Infinite copy and paste messages to friends!"
+          }
+        />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="" />
+        <meta
+          property="og:image"
+          content="https://raw.githubusercontent.com/hypulse/ctrlv-two/0cf3a7040af7acbebe55b43aa302d633d126c176/public/graphic.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="57x57"
+          href="/apple-icon-57x57.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="60x60"
+          href="/apple-icon-60x60.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="72x72"
+          href="/apple-icon-72x72.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="76x76"
+          href="/apple-icon-76x76.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="114x114"
+          href="/apple-icon-114x114.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="120x120"
+          href="/apple-icon-120x120.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="144x144"
+          href="/apple-icon-144x144.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="152x152"
+          href="/apple-icon-152x152.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-icon-180x180.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="192x192"
+          href="/android-icon-192x192.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="96x96"
+          href="/favicon-96x96.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+        <meta name="theme-color" content="#ffffff"></meta>
       </Head>
+      <div
+        className={`transition-opacity absolute right-0 bottom-0 bg-green-100 rounded border border-green-200 m-4 px-4 py-2 z-10 text-green-600 flex items-center space-x-4 ${
+          notiOpen ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="shrink-0">{checkIcon}</div>
+        <div className="w-48">
+          {locale == "ko" ? (
+            <div>
+              <span className="font-bold">성공!</span>&nbsp;{num}&nbsp;번 복사를
+              완료했습니다.
+            </div>
+          ) : (
+            <div>
+              <span className="font-bold">Success!</span>&nbsp;Complete
+              copying&nbsp;{num} times.
+            </div>
+          )}
+        </div>
+      </div>
+      <div
+        className={`absolute top-0 z-20 flex items-center justify-center w-full h-full bg-white/50 dark:bg-slate-700/50 ${
+          shareOpen ? "flex" : "hidden"
+        }`}
+      >
+        <div className="flex flex-col p-4 space-y-4 bg-white border rounded dark:bg-slate-700 dark:border-none">
+          <div className="flex items-center">
+            <div className="text-lg font-bold text-slate-700 dark:text-white">
+              {locale == "ko" ? "공유하기" : "Share via"}
+            </div>
+            <div className="grow"></div>
+            <div
+              className="p-2 transition-colors rounded-full cursor-pointer text-slate-400 hover:text-slate-500 dark:hover:text-slate-300 hover:bg-gray-400/10"
+              onClick={() => {
+                setShareOpen(false);
+              }}
+            >
+              {closeIcon}
+            </div>
+          </div>
+          <div className="border-b dark:border-slate-600"></div>
+          <div className="flex space-x-2 text-sm">
+            <div className="px-4 py-2 rounded-sm bg-slate-400/10 dark:text-white">
+              {URL}
+            </div>
+            <button
+              className="px-4 py-2 text-white transition-colors rounded-sm bg-sky-500 hover:bg-sky-600"
+              onClick={() => {
+                setShareOpen(false);
+                copyCommand(URL);
+              }}
+            >
+              {locale == "ko" ? "링크 복사" : "Copy link"}
+            </button>
+          </div>
+        </div>
+      </div>
       <nav className="flex items-center h-16 px-6 space-x-2 transition-colors border-b dark:border-slate-700">
         <div className="flex w-44">
           {theme === "light" ? <Image alt="" src={wordmark}></Image> : ""}
@@ -122,7 +299,7 @@ const Home: NextPage = () => {
         <div
           className="p-2 transition-colors rounded-full cursor-pointer text-slate-400 hover:text-slate-500 dark:hover:text-slate-300 hover:bg-gray-400/10"
           onClick={() => {
-            toggleThemeMenu();
+            setMenuOpen((prev) => !prev);
           }}
         >
           {theme === "light" ? lightIcon : ""}
@@ -136,7 +313,11 @@ const Home: NextPage = () => {
         <div
           className="p-2 transition-colors rounded-full cursor-pointer text-slate-400 hover:text-slate-500 hover:bg-gray-400/10 dark:hover:text-slate-300"
           onClick={() => {
-            webShare(locale == "ko" ? "친구에게 보내는 무한 복붙 메시지!" : "");
+            webShare(
+              locale == "ko"
+                ? "친구에게 보내는 무한 복붙 메시지!"
+                : "Infinite copy and paste messages to friends!"
+            );
           }}
         >
           <svg
@@ -160,7 +341,7 @@ const Home: NextPage = () => {
               theme === "light" ? "text-sky-500" : ""
             }`}
             onClick={() => {
-              toggleThemeMenu();
+              setMenuOpen(false);
               setTheme("light");
               themeChainging();
               localStorage.theme = "light";
@@ -182,7 +363,7 @@ const Home: NextPage = () => {
               theme === "dark" ? "text-sky-500" : ""
             }`}
             onClick={() => {
-              toggleThemeMenu();
+              setMenuOpen(false);
               setTheme("dark");
               themeChainging();
               localStorage.theme = "dark";
@@ -204,7 +385,7 @@ const Home: NextPage = () => {
               theme === "system" ? "text-sky-500" : ""
             }`}
             onClick={() => {
-              toggleThemeMenu();
+              setMenuOpen(false);
               setTheme("system");
               themeChainging();
               localStorage.removeItem("theme");
@@ -241,11 +422,23 @@ const Home: NextPage = () => {
                 : "Enter the text you want to copy."
             }
             style={{ resize: "none" }}
+            onChange={(e) => {
+              let t = e.target.value;
+              if (t.length <= 500) {
+                setText(t);
+              } else {
+                setText(t.substr(0, 500));
+              }
+            }}
+            value={text}
           ></textarea>
           <div className="flex flex-wrap -m-2">
             <select
               className="h-10 m-2 transition-colors bg-transparent border-b cursor-pointer basis-full sm:basis-0 sm:grow hover:border-b-2 focus:border-b-2 dark:text-white focus:border-blue-600 dark:focus:border-blue-600 dark:border-slate-700"
               defaultValue="100"
+              onChange={(e) => {
+                setNum(parseInt(e.target.value));
+              }}
             >
               <option value="10" className="text-black">
                 {locale == "ko" ? "10 번" : "10 Times"}
@@ -263,7 +456,20 @@ const Home: NextPage = () => {
                 {locale == "ko" ? "1000 번" : "1000 Times"}
               </option>
             </select>
-            <button className="h-10 m-2 text-white transition-colors bg-blue-500 rounded hover:bg-blue-600 basis-full sm:basis-0 sm:grow">
+            <button
+              className="h-10 m-2 text-white transition-colors bg-blue-500 rounded hover:bg-blue-600 basis-full sm:basis-0 sm:grow"
+              onClick={() => {
+                let t = "";
+                for (var i = 0; i < num; i++) {
+                  t += text;
+                }
+                copyCommand(t);
+                setNotiOpen(true);
+                setTimeout(function () {
+                  setNotiOpen(false);
+                }, 1000);
+              }}
+            >
               {locale == "ko" ? "복사하기" : "Copying"}
             </button>
           </div>
