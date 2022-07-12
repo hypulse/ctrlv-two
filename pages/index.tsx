@@ -98,6 +98,13 @@ const Home: NextPage = () => {
     } else {
       document.documentElement.classList.remove("dark");
     }
+    if (localStorage.theme === "dark") {
+      setTheme("dark");
+    } else if (localStorage.theme === "light") {
+      setTheme("light");
+    } else {
+      setTheme("system");
+    }
   };
 
   const copyCommand = (text: string) => {
@@ -225,7 +232,7 @@ const Home: NextPage = () => {
         <meta name="theme-color" content="#ffffff"></meta>
       </Head>
       <div
-        className={`transition-opacity absolute right-0 bottom-0 bg-green-100 rounded border border-green-200 m-4 px-4 py-2 z-10 text-green-600 flex items-center space-x-4 ${
+        className={`transition-opacity fixed right-0 bottom-0 bg-green-100 rounded border border-green-200 m-4 px-4 py-2 z-10 text-green-600 flex items-center space-x-4 ${
           notiOpen ? "opacity-100" : "opacity-0"
         }`}
       >
